@@ -5,84 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Customer Support • Chat (White & Blue)</title>
   <style>
-    :root {
-      --bg:#f8fafc; --panel:#ffffff; --muted:#eef2ff; --fg:#0f172a;
-      --me:#2563eb; --meText:#ffffff; --bot:#e5edff; --accent:#2563eb;
-      --border:#dbe2ef; --shadow: 0 10px 30px rgba(15,23,42,.12);
-    }
+    :root{--bg:#f8fafc;--panel:#ffffff;--muted:#eef2ff;--fg:#0f172a;--me:#2563eb;--meText:#ffffff;--bot:#e5edff;--accent:#2563eb;--border:#dbe2ef;--shadow:0 10px 30px rgba(15,23,42,.12)}
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0; overflow:hidden;}
-    body{
-      font:16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
-      color:var(--fg); display:flex; align-items:center; justify-content:center; padding:16px;
-    }
-
-    .wrap{width:640px; max-width:100%; display:grid; gap:12px}
-    .chat{
-      background:var(--panel); border:1px solid var(--border);
-      border-radius:18px; box-shadow:var(--shadow); overflow:hidden;
-      display:grid; grid-template-rows:auto 1fr auto;
-      height:min(88vh, 720px);
-    }
-    .head{display:flex;gap:12px;align-items:center;padding:12px 14px;
-      background:var(--muted);border-bottom:1px solid var(--border);font-weight:700}
-    .logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
-      background:var(--accent);color:white;font-weight:900;box-shadow:0 6px 18px rgba(37,99,235,.35)}
-
-    .log{min-height:0; overflow:auto; padding:14px; display:flex; flex-direction:column; gap:8px; scroll-behavior:smooth}
-    .msg{max-width:78%; padding:10px 12px; border-radius:16px; line-height:1.35; word-break:break-word; white-space:pre-wrap}
+    html,body{height:100%;margin:0;overflow:hidden}
+    body{font:16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);color:var(--fg);display:flex;align-items:center;justify-content:center;padding:16px}
+    .wrap{width:640px;max-width:100%;display:grid;gap:12px}
+    .chat{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;height:min(88vh,720px)}
+    .head{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--muted);border-bottom:1px solid var(--border);font-weight:700}
+    .logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:#fff;font-weight:900;box-shadow:0 6px 18px rgba(37,99,235,.35)}
+    .log{min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+    .msg{max-width:78%;padding:10px 12px;border-radius:16px;line-height:1.35;word-break:break-word;white-space:pre-wrap}
     .msg.bot{background:var(--bot);align-self:flex-start}
     .msg.me{background:var(--me);color:var(--meText);align-self:flex-end}
     .msg.sys{background:#eef2ff;border:1px dashed var(--border);align-self:center;color:#475569;max-width:92%}
-
     .attachments{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .att-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;background:#f1f5ff;font-size:12px}
     .att-chip img{width:22px;height:22px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
     .att-remove{margin-left:4px;border:none;background:transparent;cursor:pointer;font-weight:700;color:#475569}
-
     .typing{display:inline-flex;gap:6px;align-items:center;opacity:.85}
     .typing span{width:6px;height:6px;border-radius:50%;background:#64748b;animation:b 1.4s infinite ease-in-out}
     .typing span:nth-child(2){animation-delay:.15s}
     .typing span:nth-child(3){animation-delay:.3s}
     @keyframes b{0%,80%,100%{opacity:.2;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
-
-    form{
-      display:grid; grid-template-columns:auto 1fr auto; grid-template-rows:auto auto;
-      gap:10px; padding:10px; background:var(--muted); border-top:1px solid var(--border); align-items:end;
-    }
+    form{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;gap:10px;padding:10px;background:var(--muted);border-top:1px solid var(--border);align-items:end}
     .left-tools{display:flex;gap:8px}
-    .icon-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:white;display:grid;place-items:center;cursor:pointer}
+    .icon-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:#fff;display:grid;place-items:center;cursor:pointer}
     .icon-btn:hover{background:#f1f5ff}
-    textarea{grid-column:2/3; min-height:44px; max-height:160px; resize:vertical; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:white; color:var(--fg)}
-    button[type="submit"]{padding:10px 14px;border:none;border-radius:12px;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+    textarea{grid-column:2/3;min-height:44px;max-height:160px;resize:vertical;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--fg)}
+    button[type="submit"]{padding:10px 14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
     button:disabled{opacity:.6;cursor:not-allowed}
-
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
-    .chip{border:1px solid var(--border);background:white;color:var(--fg);padding:8px 10px;border-radius:999px;cursor:pointer;font-size:14px}
+    .chip{border:1px solid var(--border);background:#fff;color:var(--fg);padding:8px 10px;border-radius:999px;cursor:pointer;font-size:14px}
     .chip:hover{background:#f1f5ff}
-
     .ticket{background:#f8faff;border:1px solid var(--border);border-radius:14px;padding:12px}
     .ticket h4{margin:0 0 6px 0}
     .muted{opacity:.75}
-
-    /* composer tray ABOVE the input */
-   #tray{ grid-column: 1 / 4; grid-row: 1; }
-   .left-tools{ grid-row: 2; }                 /* icons column */
-textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
-#send{ grid-column: 3 / 4; grid-row: 2; } 
-
-    /* --- Camera modal visibility & size (keep buttons visible) --- */
-    .modal{ z-index:9999; }
-    .modal .sheet{ max-height:90vh; overflow:auto; }
-    #camVideo, #camCanvas{ width:100%; max-height:60vh; object-fit:contain; border-radius:12px; }
-    .cam-actions{
-      position:sticky; bottom:0; background:#fff; padding-top:8px;
-      border-top:1px solid var(--border);
-    }
-    @media (max-height:640px){
-      #camVideo, #camCanvas{ max-height:50vh; }
-    }
+    #tray{grid-column:1/4;grid-row:1}
+    .left-tools{grid-row:2}
+    textarea#text{grid-column:2/3;grid-row:2}
+    #send{grid-column:3/4;grid-row:2}
+    .modal{z-index:9999}
+    .modal .sheet{max-height:90vh;overflow:auto}
+    #camVideo,#camCanvas{width:100%;max-height:60vh;object-fit:contain;border-radius:12px}
+    .cam-actions{position:sticky;bottom:0;background:#fff;padding-top:8px;border-top:1px solid var(--border)}
+    @media (max-height:640px){#camVideo,#camCanvas{max-height:50vh}}
   </style>
 </head>
 <body>
@@ -99,20 +65,14 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
       <form id="form" autocomplete="off">
         <div class="left-tools">
           <button class="icon-btn" id="btnAttach" type="button" title="Attach file" aria-label="Attach">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8">
-              <path d="M21.44 11.05 12 20.5a6 6 0 1 1-8.49-8.48l10.6-10.6a4 4 0 0 1 5.66 5.66L9.88 16.97a2 2 0 0 1-2.83-2.83L16.2 4.99"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8"><path d="M21.44 11.05 12 20.5a6 6 0 1 1-8.49-8.48l10.6-10.6a4 4 0 0 1 5.66 5.66L9.88 16.97a2 2 0 0 1-2.83-2.83L16.2 4.99"/></svg>
           </button>
           <button class="icon-btn" id="btnCamera" type="button" title="Open camera" aria-label="Camera">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8">
-              <path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8"><path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></svg>
           </button>
           <input id="fileInput" type="file" multiple hidden />
         </div>
 
-        <!-- tray shows selected photos above the textarea -->
         <div id="tray"></div>
 
         <textarea id="text" autofocus></textarea>
@@ -123,14 +83,14 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
 
   <!-- Camera Modal -->
   <div class="modal" id="camModal" role="dialog" aria-modal="true" aria-labelledby="camTitle" style="position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:20px">
-    <div class="sheet" style="background:white;border-radius:16px;box-shadow:var(--shadow);width:min(800px,96vw);padding:16px;border:1px solid var(--border)">
+    <div class="sheet" style="background:#fff;border-radius:16px;box-shadow:var(--shadow);width:min(800px,96vw);padding:16px;border:1px solid var(--border)">
       <h3 id="camTitle" style="margin:0 0 10px 0">Camera</h3>
       <div class="cam-wrap" style="display:grid;gap:10px">
         <video id="camVideo" autoplay playsinline style="width:100%;border-radius:12px;border:1px solid var(--border);background:#000"></video>
         <canvas id="camCanvas" hidden style="width:100%;border-radius:12px;border:1px solid var(--border);background:#000"></canvas>
         <div class="cam-actions" style="display:flex;gap:10px;justify-content:flex-end">
-          <button class="link" id="camClose" type="button" style="background:white;border:1px solid var(--border);color:var(--fg);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Close</button>
-          <button class="link primary" id="camSnap" type="button" style="background:var(--accent);border:none;color:white;padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Capture</button>
+          <button class="link" id="camClose" type="button" style="background:#fff;border:1px solid var(--border);color:var(--fg);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Close</button>
+          <button class="link primary" id="camSnap" type="button" style="background:var(--accent);border:none;color:#fff;padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Capture</button>
         </div>
       </div>
     </div>
@@ -138,16 +98,26 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
 
   <script>
     /***** CONFIG *****/
-    // const WEBHOOK_URL = 'http://localhost:5678/webhook/chat/inbound';
-    const WEBHOOK_URL = 'https://celebs-beast-spice-tools.trycloudflare.com/webhook/chat/inbound';
-
+    // Default webhook (change to your production URL). You can override via ?webhook= in the page URL.
+    let WEBHOOK_URL = 'http://localhost:5678/webhook/chat/inbound';
     const MAX_FILE_MB = 8;
+
+    // --- Allow overrides from query string (?webhook= & ?site=) ---
+    (function applyOverrides(){
+      try{
+        const qs = new URLSearchParams(location.search);
+        const wh = qs.get('webhook');
+        if (wh) WEBHOOK_URL = wh;
+        const site = qs.get('site');
+        if (site) { window.clientDraft = window.clientDraft || {}; window.clientDraft.site = site; }
+      }catch(e){}
+    })();
 
     /***** SESSION / STATE *****/
     const uidKey = 'support_user_id';
     let sessionId = localStorage.getItem(uidKey) || (()=>{ const id='u_'+Math.random().toString(36).slice(2); localStorage.setItem(uidKey,id); return id; })();
     let lastState = '';
-    let clientDraft = {};
+    let clientDraft = window.clientDraft || {};
     let pendingAttachments = [];
 
     /***** DOM *****/
@@ -213,7 +183,7 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
       attList.forEach(a=>{
         const chip=document.createElement('div'); chip.className='att-chip';
         if ((a.type||'').startsWith('image/') && a.previewUrl){
-          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name; chip.appendChild(img);
+          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name||'image'; chip.appendChild(img);
         }else{
           const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
           icon.setAttribute('width','18'); icon.setAttribute('height','18'); icon.setAttribute('viewBox','0 0 24 24');
@@ -232,7 +202,7 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
       pendingAttachments.forEach((a, idx)=>{
         const chip=document.createElement('div'); chip.className='att-chip';
         if ((a.type||'').startsWith('image/') && a.previewUrl){
-          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name; chip.appendChild(img);
+          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name||'image'; chip.appendChild(img);
         }
         const label=document.createElement('span'); label.textContent=a.name||'attachment'; chip.appendChild(label);
         const x=document.createElement('button'); x.className='att-remove'; x.type='button'; x.textContent='×'; x.title='Remove';
@@ -248,9 +218,9 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
       const files=Array.from(e.target.files||[]);
       if(!files.length) return;
       for (const f of files){
-        if (f.size > 8*1024*1024){ push('bot', `File too large: ${f.name} (max 8MB)`); continue; }
-        const base64=await fileToBase64(f);
-        const previewUrl=(f.type||'').startsWith('image/') ? URL.createObjectURL(f) : null;
+        if (f.size > MAX_FILE_MB*1024*1024){ push('bot', `File too large: ${f.name} (max ${MAX_FILE_MB}MB)`); continue; }
+        const base64 = await fileToBase64(f);
+        const previewUrl = (f.type||'').startsWith('image/') ? URL.createObjectURL(f) : null;
         pendingAttachments.push({ name:f.name, type:f.type||'application/octet-stream', size:f.size, data:base64, previewUrl });
       }
       renderTray();
@@ -308,18 +278,28 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
 
     /***** SEND *****/
     async function sendToBot({ text=null, choiceId=null } = {}){
+      if (!WEBHOOK_URL){ push('bot','No webhook configured.'); return; }
+
       const body = {
         channel:'web', sessionId, text, choiceId, state:lastState, draft:clientDraft,
         attachments: pendingAttachments.map(a => ({ name:a.name, type:a.type, size:a.size, data:a.data }))
       };
+
       pushTyping(); sendBtn.disabled=true;
       try{
-        const res=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const res=await fetch(WEBHOOK_URL,{
+          method:'POST',
+          headers:{ 'Content-Type':'application/json','Accept':'application/json' },
+          body:JSON.stringify(body),
+        });
         let data; const ct=res.headers.get('content-type')||'';
-        if (ct.includes('application/json')) data=await res.json(); else { const raw=await res.text(); try{ data=JSON.parse(raw) } catch { data={message:raw} } }
+        if (ct.includes('application/json')) data=await res.json();
+        else { const raw=await res.text(); try{ data=JSON.parse(raw) } catch { data={message:raw} } }
+
         removeTyping();
         if(!res.ok){ push('bot',`Error ${res.status}: ${data?.message||'Request failed'}`); return; }
-        if (pendingAttachments.length) renderAttachmentsBubble(pendingAttachments, 'me'); // show sent files
+
+        if (pendingAttachments.length) renderAttachmentsBubble(pendingAttachments, 'me');
         renderReply(data);
       }catch(err){
         removeTyping(); push('bot','Sorry, I could not reach the server.');
@@ -345,5 +325,82 @@ textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
     input.addEventListener('input', auto); auto();
     window.addEventListener('load', ()=>{ input.focus({preventScroll:true}); });
   </script>
+
+  <!-- Hide background chat at top-level; only show bubble -->
+  <script>
+    (function () {
+      if (window.top === window.self) {                       // not inside iframe → hide full chat UI
+        var container = document.querySelector('.wrap');
+        if (container) container.style.display = 'none';
+        document.documentElement.style.overflow = 'auto';
+        document.body.style.overflow = 'auto';
+      }
+    })();
+  </script>
+
+  <!-- Floating chat button: opens this same page in a panel (keeps ?webhook & ?site) -->
+  <script
+    data-position="right"
+    data-color="#2563eb"
+    data-width="350"
+    data-height="420">
+  (function () {
+    try {
+      if (window.top !== window.self) return; // don't render bubble inside iframe
+      var d = document, s = d.currentScript, ds = s.dataset || {};
+      var CHAT_URL = (location.href).trim(); // reuse this page URL so params pass through
+      var POS   = (ds.position || 'right').toLowerCase();
+      var COLOR = ds.color || '#2563eb';
+      var WIDTH = parseInt(ds.width  || '420', 10);
+      var HEIGHT= parseInt(ds.height || '600', 10);
+
+      var bubble = d.createElement('button');
+      bubble.type='button';
+      bubble.setAttribute('aria-label','Open chat');
+      bubble.style.cssText='position:fixed;'+(POS==='left'?'left:16px;':'right:16px;')+
+        'bottom:16px;width:56px;height:56px;border-radius:999px;border:none;background:'+COLOR+
+        ';color:#fff;cursor:pointer;z-index:2147483647;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25);';
+      bubble.innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10z"/></svg>';
+
+      var panel = d.createElement('div');
+      panel.style.cssText='position:fixed;'+(POS==='left'?'left:16px;':'right:16px;')+
+        'bottom:84px;width:'+WIDTH+'px;height:'+HEIGHT+'px;display:none;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);z-index:2147483647;border:1px solid #dbe2ef;';
+
+      var iframe = d.createElement('iframe');
+      var sep = CHAT_URL.indexOf('?')>-1 ? '&' : '?';
+      iframe.src = CHAT_URL + sep + 'parent=' + encodeURIComponent(location.host);
+      iframe.title='Chat';
+      iframe.allow='camera; microphone;';
+      iframe.style.cssText='border:0;width:100%;height:100%;background:#fff;';
+      panel.appendChild(iframe);
+
+      var close = d.createElement('button');
+      close.type='button'; close.textContent='×'; close.setAttribute('aria-label','Close chat');
+      close.style.cssText='position:absolute;top:8px;right:8px;width:32px;height:32px;border:none;background:#fff;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.15);cursor:pointer;font-weight:700;';
+      panel.appendChild(close);
+
+      function setResponsive(open){
+        if(!open) return;
+        var small = Math.min(window.innerWidth, window.innerHeight) < 560;
+        panel.style.width  = small ? '100vw' : WIDTH+'px';
+        panel.style.height = small ? '100vh' : HEIGHT+'px';
+        panel.style.left   = small ? '0' : (POS==='left'?'16px':'');
+        panel.style.right  = small ? '0' : (POS==='right'?'16px':'');
+        panel.style.bottom = small ? '0' : '84px';
+        panel.style.borderRadius = small ? '0' : '16px';
+      }
+      function toggle(open){ panel.style.display=open?'block':'none'; setResponsive(open); }
+
+      bubble.addEventListener('click', function(){ toggle(true); });
+      close.addEventListener('click', function(){ toggle(false); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape') toggle(false); });
+      window.addEventListener('resize', function(){ setResponsive(panel.style.display!=='none'); });
+
+      d.body.appendChild(bubble);
+      d.body.appendChild(panel);
+    } catch(e){ console.error('[Bubble]', e); }
+  })();
+  </script>
+
 </body>
 </html>
