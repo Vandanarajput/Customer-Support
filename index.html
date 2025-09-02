@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Customer Support • Chat (White & Blue)</title>
+  <style>
+    :root {
+      --bg:#f8fafc; --panel:#ffffff; --muted:#eef2ff; --fg:#0f172a;
+      --me:#2563eb; --meText:#ffffff; --bot:#e5edff; --accent:#2563eb;
+      --border:#dbe2ef; --shadow: 0 10px 30px rgba(15,23,42,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; overflow:hidden;}
+    body{
+      font:16px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+      color:var(--fg); display:flex; align-items:center; justify-content:center; padding:16px;
+    }
+
+    .wrap{width:640px; max-width:100%; display:grid; gap:12px}
+    .chat{
+      background:var(--panel); border:1px solid var(--border);
+      border-radius:18px; box-shadow:var(--shadow); overflow:hidden;
+      display:grid; grid-template-rows:auto 1fr auto;
+      height:min(88vh, 720px);
+    }
+    .head{display:flex;gap:12px;align-items:center;padding:12px 14px;
+      background:var(--muted);border-bottom:1px solid var(--border);font-weight:700}
+    .logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+      background:var(--accent);color:white;font-weight:900;box-shadow:0 6px 18px rgba(37,99,235,.35)}
+
+    .log{min-height:0; overflow:auto; padding:14px; display:flex; flex-direction:column; gap:8px; scroll-behavior:smooth}
+    .msg{max-width:78%; padding:10px 12px; border-radius:16px; line-height:1.35; word-break:break-word; white-space:pre-wrap}
+    .msg.bot{background:var(--bot);align-self:flex-start}
+    .msg.me{background:var(--me);color:var(--meText);align-self:flex-end}
+    .msg.sys{background:#eef2ff;border:1px dashed var(--border);align-self:center;color:#475569;max-width:92%}
+
+    .attachments{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .att-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;background:#f1f5ff;font-size:12px}
+    .att-chip img{width:22px;height:22px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
+    .att-remove{margin-left:4px;border:none;background:transparent;cursor:pointer;font-weight:700;color:#475569}
+
+    .typing{display:inline-flex;gap:6px;align-items:center;opacity:.85}
+    .typing span{width:6px;height:6px;border-radius:50%;background:#64748b;animation:b 1.4s infinite ease-in-out}
+    .typing span:nth-child(2){animation-delay:.15s}
+    .typing span:nth-child(3){animation-delay:.3s}
+    @keyframes b{0%,80%,100%{opacity:.2;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+
+    form{
+      display:grid; grid-template-columns:auto 1fr auto; grid-template-rows:auto auto;
+      gap:10px; padding:10px; background:var(--muted); border-top:1px solid var(--border); align-items:end;
+    }
+    .left-tools{display:flex;gap:8px}
+    .icon-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:white;display:grid;place-items:center;cursor:pointer}
+    .icon-btn:hover{background:#f1f5ff}
+    textarea{grid-column:2/3; min-height:44px; max-height:160px; resize:vertical; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:white; color:var(--fg)}
+    button[type="submit"]{padding:10px 14px;border:none;border-radius:12px;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+    .chip{border:1px solid var(--border);background:white;color:var(--fg);padding:8px 10px;border-radius:999px;cursor:pointer;font-size:14px}
+    .chip:hover{background:#f1f5ff}
+
+    .ticket{background:#f8faff;border:1px solid var(--border);border-radius:14px;padding:12px}
+    .ticket h4{margin:0 0 6px 0}
+    .muted{opacity:.75}
+
+    /* composer tray ABOVE the input */
+   #tray{ grid-column: 1 / 4; grid-row: 1; }
+   .left-tools{ grid-row: 2; }                 /* icons column */
+textarea#text{ grid-column: 2 / 3; grid-row: 2; }  /* input */
+#send{ grid-column: 3 / 4; grid-row: 2; } 
+
+    /* --- Camera modal visibility & size (keep buttons visible) --- */
+    .modal{ z-index:9999; }
+    .modal .sheet{ max-height:90vh; overflow:auto; }
+    #camVideo, #camCanvas{ width:100%; max-height:60vh; object-fit:contain; border-radius:12px; }
+    .cam-actions{
+      position:sticky; bottom:0; background:#fff; padding-top:8px;
+      border-top:1px solid var(--border);
+    }
+    @media (max-height:640px){
+      #camVideo, #camCanvas{ max-height:50vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="chat" role="region" aria-label="Support chat">
+      <div class="head">
+        <div class="logo">S</div>
+        <div>Customer Support</div>
+        <div style="margin-left:auto;font-size:12px;opacity:.7">White & Blue</div>
+      </div>
+
+      <div id="log" class="log" aria-live="polite"></div>
+
+      <form id="form" autocomplete="off">
+        <div class="left-tools">
+          <button class="icon-btn" id="btnAttach" type="button" title="Attach file" aria-label="Attach">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8">
+              <path d="M21.44 11.05 12 20.5a6 6 0 1 1-8.49-8.48l10.6-10.6a4 4 0 0 1 5.66 5.66L9.88 16.97a2 2 0 0 1-2.83-2.83L16.2 4.99"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnCamera" type="button" title="Open camera" aria-label="Camera">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8">
+              <path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </button>
+          <input id="fileInput" type="file" multiple hidden />
+        </div>
+
+        <!-- tray shows selected photos above the textarea -->
+        <div id="tray"></div>
+
+        <textarea id="text" autofocus></textarea>
+        <button id="send" type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Camera Modal -->
+  <div class="modal" id="camModal" role="dialog" aria-modal="true" aria-labelledby="camTitle" style="position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:20px">
+    <div class="sheet" style="background:white;border-radius:16px;box-shadow:var(--shadow);width:min(800px,96vw);padding:16px;border:1px solid var(--border)">
+      <h3 id="camTitle" style="margin:0 0 10px 0">Camera</h3>
+      <div class="cam-wrap" style="display:grid;gap:10px">
+        <video id="camVideo" autoplay playsinline style="width:100%;border-radius:12px;border:1px solid var(--border);background:#000"></video>
+        <canvas id="camCanvas" hidden style="width:100%;border-radius:12px;border:1px solid var(--border);background:#000"></canvas>
+        <div class="cam-actions" style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="link" id="camClose" type="button" style="background:white;border:1px solid var(--border);color:var(--fg);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Close</button>
+          <button class="link primary" id="camSnap" type="button" style="background:var(--accent);border:none;color:white;padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer">Capture</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***** CONFIG *****/
+    const WEBHOOK_URL = 'http://localhost:5678/webhook/chat/inbound';
+    const MAX_FILE_MB = 8;
+
+    /***** SESSION / STATE *****/
+    const uidKey = 'support_user_id';
+    let sessionId = localStorage.getItem(uidKey) || (()=>{ const id='u_'+Math.random().toString(36).slice(2); localStorage.setItem(uidKey,id); return id; })();
+    let lastState = '';
+    let clientDraft = {};
+    let pendingAttachments = [];
+
+    /***** DOM *****/
+    const logEl   = document.getElementById('log');
+    const form    = document.getElementById('form');
+    const input   = document.getElementById('text');
+    const sendBtn = document.getElementById('send');
+    const btnAttach = document.getElementById('btnAttach');
+    const fileInput = document.getElementById('fileInput');
+    const btnCamera = document.getElementById('btnCamera');
+    const tray = document.getElementById('tray');
+
+    const camModal  = document.getElementById('camModal');
+    const camVideo  = document.getElementById('camVideo');
+    const camCanvas = document.getElementById('camCanvas');
+    const camSnap   = document.getElementById('camSnap');
+    const camClose  = document.getElementById('camClose');
+    let camStream   = null;
+
+    /***** HELPERS *****/
+    function scrollBottom(){ logEl.scrollTop = logEl.scrollHeight; }
+    function focusBox(){ requestAnimationFrame(()=>{ input.focus({preventScroll:true}); const l=input.value.length; try{input.setSelectionRange(l,l)}catch{} }); }
+    function asObj(v){ if (typeof v==='string'){ try{return JSON.parse(v)}catch{} } return v; }
+    function push(role, text){ const d=document.createElement('div'); d.className=`msg ${role}`; d.textContent=String(text??''); logEl.appendChild(d); scrollBottom(); return d; }
+    function pushTyping(){ const w=document.createElement('div'); w.className='msg bot'; w.id='typing'; w.innerHTML='<span class="typing"><span></span><span></span><span></span></span>'; logEl.appendChild(w); scrollBottom(); }
+    function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
+
+    function renderChoices(choices){
+      if (!Array.isArray(choices) || !choices.length) return;
+      const row = document.createElement('div'); row.className='chips';
+      choices.forEach(c=>{
+        const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=c.title||c.id;
+        b.addEventListener('click', ()=>{
+          if (c.id==='attach.photo'){ fileInput.click(); return; }
+          if (c.id==='start.camera'){ btnCamera.click(); return; }
+          push('me', b.textContent);
+          sendToBot({ choiceId:c.id });
+          row.remove();
+        });
+        row.appendChild(b);
+      });
+      const block=document.createElement('div'); block.className='msg bot'; block.appendChild(row); logEl.appendChild(block); scrollBottom();
+    }
+
+    function renderTicket(t){
+      if (!t || typeof t!=='object') return;
+      const card=document.createElement('div'); card.className='msg bot';
+      const wrap=document.createElement('div'); wrap.className='ticket';
+      wrap.innerHTML=`
+        <h4>🎫 Ticket ${t.id||''}</h4>
+        <div class="muted">Status: ${t.status||'Open'}</div>
+        <div><b>Order ID:</b> ${t.orderId||'—'}</div>
+        <div><b>Name:</b> ${t.name||'—'}</div>
+        <div><b>Category:</b> ${t.category||'—'}</div>
+        <div><b>Summary:</b> ${t.description||'—'}</div>`;
+      card.appendChild(wrap); logEl.appendChild(card); scrollBottom();
+    }
+
+    function renderAttachmentsBubble(attList, role='me'){
+      if (!attList?.length) return;
+      const wrap=document.createElement('div'); wrap.className=`msg ${role}`;
+      const cont=document.createElement('div'); cont.className='attachments';
+      attList.forEach(a=>{
+        const chip=document.createElement('div'); chip.className='att-chip';
+        if ((a.type||'').startsWith('image/') && a.previewUrl){
+          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name; chip.appendChild(img);
+        }else{
+          const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
+          icon.setAttribute('width','18'); icon.setAttribute('height','18'); icon.setAttribute('viewBox','0 0 24 24');
+          icon.innerHTML='<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="#94a3b8"></path><path d="M14 2v6h6" fill="#cbd5e1"></path>';
+          chip.appendChild(icon);
+        }
+        const label=document.createElement('span'); label.textContent=a.name||'attachment'; chip.appendChild(label);
+        cont.appendChild(chip);
+      });
+      wrap.appendChild(cont); logEl.appendChild(wrap); scrollBottom();
+    }
+
+    function renderTray(){
+      tray.innerHTML='';
+      if (!pendingAttachments.length) return;
+      pendingAttachments.forEach((a, idx)=>{
+        const chip=document.createElement('div'); chip.className='att-chip';
+        if ((a.type||'').startsWith('image/') && a.previewUrl){
+          const img=document.createElement('img'); img.src=a.previewUrl; img.alt=a.name; chip.appendChild(img);
+        }
+        const label=document.createElement('span'); label.textContent=a.name||'attachment'; chip.appendChild(label);
+        const x=document.createElement('button'); x.className='att-remove'; x.type='button'; x.textContent='×'; x.title='Remove';
+        x.onclick=()=>{ pendingAttachments.splice(idx,1); renderTray(); };
+        chip.appendChild(x);
+        tray.appendChild(chip);
+      });
+    }
+
+    /***** FILES *****/
+    btnAttach.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', async (e)=>{
+      const files=Array.from(e.target.files||[]);
+      if(!files.length) return;
+      for (const f of files){
+        if (f.size > 8*1024*1024){ push('bot', `File too large: ${f.name} (max 8MB)`); continue; }
+        const base64=await fileToBase64(f);
+        const previewUrl=(f.type||'').startsWith('image/') ? URL.createObjectURL(f) : null;
+        pendingAttachments.push({ name:f.name, type:f.type||'application/octet-stream', size:f.size, data:base64, previewUrl });
+      }
+      renderTray();
+      fileInput.value='';
+      focusBox();
+    });
+    function fileToBase64(file){
+      return new Promise((resolve,reject)=>{
+        const rd=new FileReader();
+        rd.onload=()=>{ const res=String(rd.result||''); const comma=res.indexOf(','); resolve(comma>0?res.slice(comma+1):res); };
+        rd.onerror=reject; rd.readAsDataURL(file);
+      });
+    }
+
+    /***** CAMERA *****/
+    btnCamera.addEventListener('click', async ()=>{
+      try{
+        camStream=await navigator.mediaDevices.getUserMedia({ video:true, audio:false });
+        camVideo.srcObject=camStream; camModal.style.display='flex';
+      }catch(err){ push('bot','Camera access denied or unavailable.'); }
+    });
+    camClose.addEventListener('click', closeCamera);
+    function closeCamera(){ if (camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; } camModal.style.display='none'; }
+    camSnap.addEventListener('click', ()=>{
+      if (!camStream) return;
+      const track=camStream.getVideoTracks()[0]; const s=track.getSettings()||{};
+      const w=s.width||1280, h=s.height||720;
+      camCanvas.width=w; camCanvas.height=h;
+      const ctx=camCanvas.getContext('2d'); ctx.drawImage(camVideo,0,0,w,h);
+      camCanvas.toBlob(async (blob)=>{
+        if (!blob) return;
+        const arrBuf=await blob.arrayBuffer();
+        const base64=btoa(String.fromCharCode(...new Uint8Array(arrBuf)));
+        const previewUrl=URL.createObjectURL(blob);
+        const ts=new Date().toISOString().replace(/[:.]/g,'-');
+        pendingAttachments.push({ name:`photo-${ts}.jpg`, type:blob.type||'image/jpeg', size:blob.size, data:base64, previewUrl });
+        renderTray();
+        closeCamera(); focusBox();
+      }, 'image/jpeg', 0.9);
+    });
+
+    /***** RENDER SERVER REPLY *****/
+    function renderReply(data){
+      const reply=asObj(data?.reply) ?? asObj(data?._reply) ?? {};
+      const text=typeof reply?.text==='string' ? reply.text : (typeof data?.message==='string' ? data.message : '');
+      if (text) push('bot', text);
+      if (typeof data?.state==='string' || typeof data?.state==='object') lastState=data.state;
+      if (data?.draft && typeof data.draft==='object'){ clientDraft={...clientDraft, ...data.draft}; }
+      const choices=Array.isArray(reply?.choices) ? reply.choices : (Array.isArray(data?.choices) ? data.choices : []);
+      renderChoices(choices);
+      const ticket=asObj(reply.ticket) || asObj(data?.ticket) || asObj(data?.createdTicket);
+      if (ticket) renderTicket(ticket);
+      if (data?.sessionId && data.sessionId!==sessionId){ sessionId=data.sessionId; localStorage.setItem(uidKey, sessionId); }
+    }
+
+    /***** SEND *****/
+    async function sendToBot({ text=null, choiceId=null } = {}){
+      const body = {
+        channel:'web', sessionId, text, choiceId, state:lastState, draft:clientDraft,
+        attachments: pendingAttachments.map(a => ({ name:a.name, type:a.type, size:a.size, data:a.data }))
+      };
+      pushTyping(); sendBtn.disabled=true;
+      try{
+        const res=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        let data; const ct=res.headers.get('content-type')||'';
+        if (ct.includes('application/json')) data=await res.json(); else { const raw=await res.text(); try{ data=JSON.parse(raw) } catch { data={message:raw} } }
+        removeTyping();
+        if(!res.ok){ push('bot',`Error ${res.status}: ${data?.message||'Request failed'}`); return; }
+        if (pendingAttachments.length) renderAttachmentsBubble(pendingAttachments, 'me'); // show sent files
+        renderReply(data);
+      }catch(err){
+        removeTyping(); push('bot','Sorry, I could not reach the server.');
+      }finally{
+        pendingAttachments=[]; renderTray(); sendBtn.disabled=false; focusBox();
+      }
+    }
+
+    /***** INPUT *****/
+    input.addEventListener('keydown', (e)=>{ if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const text=input.value.trim();
+      if (!text && pendingAttachments.length===0){ push('bot','How can I help you today?'); return; }
+      if (text) push('me', text);
+      input.value=''; input.style.height='auto';
+      await sendToBot({ text });
+    });
+
+    /* FIRST LINE */
+    push('sys','How can I help you today?');
+    const auto=()=>{ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,160)+'px'; };
+    input.addEventListener('input', auto); auto();
+    window.addEventListener('load', ()=>{ input.focus({preventScroll:true}); });
+  </script>
+</body>
+</html>
