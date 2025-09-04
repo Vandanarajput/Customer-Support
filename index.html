@@ -116,6 +116,7 @@
       }catch(e){}
     })();
 
+
     /***** SESSION / STATE *****/
     const uidKey = 'support_user_id';
 
@@ -331,6 +332,7 @@
       input.value=''; input.style.height='auto';
       await sendToBot({ text });
     });
+    
 
     /* FIRST LINE */
     push('sys','How can I help you today?');
@@ -420,6 +422,7 @@
     } catch(e){ console.error('[Bubble]', e); }
   })();
   </script>
+
 
 </body>
 </html>
